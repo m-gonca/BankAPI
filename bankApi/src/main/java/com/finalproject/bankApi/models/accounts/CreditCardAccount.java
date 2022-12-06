@@ -1,0 +1,60 @@
+package com.finalproject.bankApi.models.accounts;
+
+import com.finalproject.bankApi.models.users.AccountHolder;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+@Entity
+public class CreditCardAccount extends Account {
+    @NotNull
+    @DecimalMax(value = "1000", inclusive = true)
+    private BigDecimal creditLimit = new BigDecimal(100);
+    @NotNull
+    @DecimalMin(value = "0.1", inclusive = true)
+    private BigDecimal interestRate = new BigDecimal(0.2);
+
+    public CreditCardAccount() {}
+
+    public CreditCardAccount(AccountHolder primaryOwner, BigDecimal  creditLimit, BigDecimal interestRate) {
+        super(primaryOwner);
+        setCreditLimit(creditLimit);
+        setInterestRate(interestRate);
+    }
+
+    public CreditCardAccount(AccountHolder primaryOwner) {
+        super(primaryOwner);
+    }
+
+    public CreditCardAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal creditLimit, BigDecimal interestRate) {
+        super(primaryOwner, secondaryOwner);
+        setCreditLimit(creditLimit);
+        setInterestRate(interestRate);
+    }
+
+    public CreditCardAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner) {
+        super(primaryOwner, secondaryOwner);
+    }
+
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        creditLimit.setScale(2, RoundingMode.CEILING);
+        this.creditLimit = creditLimit;
+    }
+
+    public BigDecimal getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
+    }
+}
