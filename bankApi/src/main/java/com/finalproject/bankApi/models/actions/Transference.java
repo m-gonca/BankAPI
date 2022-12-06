@@ -3,6 +3,8 @@ package com.finalproject.bankApi.models.actions;
 import com.finalproject.bankApi.models.accounts.Account;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -11,11 +13,14 @@ public class Transference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private BigDecimal amount;
-   
+    @NotNull
     private Long sendAccountId;
-
+    @NotNull
     private Long receiveAccountId;
+    @NotNull
+    @NotEmpty
     private String accountSecretKey;
 
     public Transference() {}

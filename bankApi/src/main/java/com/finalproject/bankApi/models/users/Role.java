@@ -2,13 +2,18 @@ package com.finalproject.bankApi.models.users;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Role{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @NotEmpty
     private String role;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

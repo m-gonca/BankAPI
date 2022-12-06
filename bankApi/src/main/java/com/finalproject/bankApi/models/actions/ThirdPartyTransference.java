@@ -2,6 +2,8 @@ package com.finalproject.bankApi.models.actions;
 
 import com.finalproject.bankApi.models.accounts.Account;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -10,9 +12,15 @@ public class ThirdPartyTransference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private BigDecimal amount;
+    @NotNull
     private Long accountId;
+    @NotNull
+    @NotEmpty
     private String accountSecretKey;
+    @NotNull
+    @NotEmpty
     private String hashKey;
 
     public ThirdPartyTransference() {
