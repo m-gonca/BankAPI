@@ -1,7 +1,5 @@
 package com.finalproject.bankApi.models.actions;
 
-import com.finalproject.bankApi.models.accounts.Account;
-import com.finalproject.bankApi.models.users.AccountHolder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,9 +21,10 @@ public class Transference {
     @NotEmpty
     private String accountSecretKey;
 
-    public Transference() {}
+    public Transference() {
+    }
 
-    public Transference(Double amount, Long sendAccountId, Long receiveAccountId, String accountSecretKey) {
+    public Transference(BigDecimal amount, Long sendAccountId, Long receiveAccountId, String accountSecretKey) {
         setAmount(amount);
         setSendAccountId(sendAccountId);
         setReceiveAccountId(receiveAccountId);
@@ -44,11 +43,7 @@ public class Transference {
         return amount;
     }
 
-    public void setAmount(Double amount) {
-        BigDecimal bg = new BigDecimal(amount);
-        this.amount = bg;
-    }
-    
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
     public Long getSendAccountId() {
         return sendAccountId;

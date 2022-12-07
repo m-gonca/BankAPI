@@ -7,8 +7,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,45 +22,25 @@ public class SavingsAccount extends Account {
     @NotNull
     @DecimalMax(value = "0.5", inclusive = true)
     private BigDecimal interestRate = new BigDecimal(0.0025);
-    @NotNull
-    private LocalDate creationDate;
-    @NotNull
+
+    private LocalDate creationDate = LocalDate.now();
+
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.ACTIVE;
 
     public SavingsAccount() {}
 
 
-    public SavingsAccount(AccountHolder primaryOwner, String secretKey, LocalDate creationDate, Status status) {
-        super(primaryOwner);
-        setSecretKey(secretKey);
-        setCreationDate(creationDate);
-        setStatus(status);
-    }
-
-    public SavingsAccount(AccountHolder primaryOwner, String secretKey, BigDecimal minBalance, BigDecimal interestRate, LocalDate creationDate, Status status) {
-        super(primaryOwner);
-        setSecretKey(secretKey);
-        setMinBalance(minBalance);
-        setInterestRate(interestRate);
-        setCreationDate(creationDate);
-        setStatus(status);
-    }
-
-    public SavingsAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey, LocalDate creationDate, Status status) {
+    public SavingsAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
         super(primaryOwner, secondaryOwner);
         setSecretKey(secretKey);
-        setCreationDate(creationDate);
-        setStatus(status);
     }
 
-    public SavingsAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey, BigDecimal minBalance, BigDecimal interestRate, LocalDate creationDate, Status status) {
+    public SavingsAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey, BigDecimal minBalance, BigDecimal interestRate) {
         super(primaryOwner, secondaryOwner);
         setSecretKey(secretKey);
         setMinBalance(minBalance);
         setInterestRate(interestRate);
-        setCreationDate(creationDate);
-        setStatus(status);
     }
 
     public BigDecimal getMinBalance() {

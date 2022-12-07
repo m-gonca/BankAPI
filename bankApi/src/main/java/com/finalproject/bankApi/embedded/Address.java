@@ -5,13 +5,13 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class Address {
     private String address;
-    private Integer postalCode;
+    private Long postalCode;
     private String city;
     private String country;
 
     public Address() {}
 
-    public Address(String address, Integer postalCode, String city, String country) {
+    public Address(String address, Long postalCode, String city, String country) {
         setAddress(address);
         setPostalCode(postalCode);
         setCity(city);
@@ -26,11 +26,11 @@ public class Address {
         this.address = address;
     }
 
-    public Integer getPostalCode() {
+    public Long getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(Integer postalCode) {
+    public void setPostalCode(Long postalCode) {
         this.postalCode = postalCode;
     }
 

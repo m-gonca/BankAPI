@@ -11,26 +11,15 @@ import java.time.LocalDate;
 
 @Entity
 public class StudentAccount extends Account {
-    @NotNull
-    private LocalDate creationDate;
-    @NotNull
+    private LocalDate creationDate = LocalDate.now();
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.ACTIVE;
 
     public StudentAccount() {}
 
-    public StudentAccount(AccountHolder primaryOwner, String secretKey, LocalDate creationDate, Status status) {
-        super(primaryOwner);
-        setSecretKey(secretKey);
-        setCreationDate(creationDate);
-        setStatus(status);
-    }
-
-    public StudentAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey, LocalDate creationDate, Status status) {
+    public StudentAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
         super(primaryOwner, secondaryOwner);
         setSecretKey(secretKey);
-        setCreationDate(creationDate);
-        setStatus(status);
     }
 
     public LocalDate getCreationDate() {

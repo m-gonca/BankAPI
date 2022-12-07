@@ -1,5 +1,6 @@
 package com.finalproject.bankApi.models.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finalproject.bankApi.embedded.Address;
 import com.finalproject.bankApi.models.accounts.Account;
 import jakarta.persistence.*;
@@ -24,8 +25,10 @@ public class AccountHolder extends User {
     })
     private Address mailAddress;
     
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "primaryOwner")
     private List<Account> primaryOwnerAccounts = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "secondaryOwner")
     private List<Account> secondaryOwnerAccounts = new ArrayList<>();
     

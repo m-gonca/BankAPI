@@ -6,17 +6,11 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class ThirdParty extends User{
-    @NotNull
-    @NotEmpty
-    private String hashKey;
 
     public ThirdParty() {}
 
-    public String getHashKey() {
-        return hashKey;
-    }
-
-    public void setHashKey(String hashKey) {
-        this.hashKey = hashKey;
+    public ThirdParty(String name) {
+        super(name);
+        super.setPassword("123456");
     }
 }

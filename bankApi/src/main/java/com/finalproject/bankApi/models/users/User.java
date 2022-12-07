@@ -30,6 +30,10 @@ public abstract class User {
         setPassword(password);
     }
 
+    public User(String name) {
+        setName(name);
+    }
+
     public Long getId() {
         return id;
     }

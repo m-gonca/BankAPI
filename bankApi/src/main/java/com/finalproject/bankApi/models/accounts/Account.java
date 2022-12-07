@@ -27,8 +27,6 @@ public abstract class Account {
     @JoinColumn(name = "secondaryOwner_id")
     private AccountHolder secondaryOwner;
     private BigDecimal penaltyFee = new BigDecimal(40);
-    @NotNull
-    @NotEmpty
     private String secretKey;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "sendAccountId")

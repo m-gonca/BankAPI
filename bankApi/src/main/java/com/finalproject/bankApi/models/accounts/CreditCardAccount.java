@@ -4,7 +4,6 @@ import com.finalproject.bankApi.models.users.AccountHolder;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
@@ -21,26 +20,15 @@ public class CreditCardAccount extends Account {
 
     public CreditCardAccount() {}
 
-    public CreditCardAccount(AccountHolder primaryOwner, BigDecimal  creditLimit, BigDecimal interestRate) {
-        super(primaryOwner);
-        setCreditLimit(creditLimit);
-        setInterestRate(interestRate);
-    }
-
-    public CreditCardAccount(AccountHolder primaryOwner) {
-        super(primaryOwner);
-    }
-
-    public CreditCardAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal creditLimit, BigDecimal interestRate) {
-        super(primaryOwner, secondaryOwner);
-        setCreditLimit(creditLimit);
-        setInterestRate(interestRate);
-    }
-
     public CreditCardAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         super(primaryOwner, secondaryOwner);
     }
-
+    public CreditCardAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, BigDecimal  creditLimit, BigDecimal interestRate) {
+        super(primaryOwner, secondaryOwner);
+        setCreditLimit(creditLimit);
+        setInterestRate(interestRate);
+    }
+    
     public BigDecimal getCreditLimit() {
         return creditLimit;
     }

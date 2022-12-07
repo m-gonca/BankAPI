@@ -26,7 +26,7 @@ public class ThirdPartyTransference {
     public ThirdPartyTransference() {
     }
 
-    public ThirdPartyTransference(Double amount, Long accountId, String accountSecretKey, String hashKey) {
+    public ThirdPartyTransference(BigDecimal amount, Long accountId, String accountSecretKey, String hashKey) {
         setAmount(amount);
         setAccountId(accountId);
         setAccountSecretKey(accountSecretKey);
@@ -43,11 +43,6 @@ public class ThirdPartyTransference {
 
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public void setAmount(Double amount) {
-        BigDecimal bg = new BigDecimal(amount);
-        this.amount = bg;
     }
 
     public void setAmount(BigDecimal amount) {

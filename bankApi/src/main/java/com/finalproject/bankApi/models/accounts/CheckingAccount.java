@@ -3,7 +3,6 @@ package com.finalproject.bankApi.models.accounts;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import com.finalproject.bankApi.enums.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
@@ -16,26 +15,16 @@ public class CheckingAccount extends Account {
     private BigDecimal minBalance = new BigDecimal(250);
     @NotNull
     private BigDecimal monthFee = new BigDecimal(12);
-    @NotNull
-    private LocalDate creationDate;
-    @NotNull
+    private LocalDate creationDate = LocalDate.now();
+
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.ACTIVE;
     
     public CheckingAccount(){}
-
-    public CheckingAccount(AccountHolder primaryOwner, String secretKey, LocalDate creationDate, Status status) {
-        super(primaryOwner);
-        setSecretKey(secretKey);
-        setCreationDate(creationDate);
-        setStatus(status);
-    }
     
-    public CheckingAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey, LocalDate creationDate, Status status) {
+    public CheckingAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
         super(primaryOwner, secondaryOwner);
         setSecretKey(secretKey);
-        setCreationDate(creationDate);
-        setStatus(status);
     }
 
     public BigDecimal getMinBalance() {
