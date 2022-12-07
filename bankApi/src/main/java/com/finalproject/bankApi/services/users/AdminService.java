@@ -1,9 +1,6 @@
 package com.finalproject.bankApi.services.users;
 
-import com.finalproject.bankApi.models.accounts.Account;
-import com.finalproject.bankApi.models.accounts.CheckingAccount;
-import com.finalproject.bankApi.models.accounts.SavingsAccount;
-import com.finalproject.bankApi.models.accounts.StudentAccount;
+import com.finalproject.bankApi.models.accounts.*;
 import com.finalproject.bankApi.models.dtos.AccountDTO;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import com.finalproject.bankApi.models.users.Admin;
@@ -67,10 +64,6 @@ public class AdminService {
     public Account addSavingsAccount(AccountDTO accountDTO) {
 
         AccountHolder primaryOwner = accountHolderRepository.findById(accountDTO.getPrimaryOwnerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account holder not found"));
-        LocalDate birthdate = primaryOwner.getBirthDate();
-        LocalDate now = LocalDate.now();
-        Period period = birthdate.until(now);
-        int age = period.getYears();
 
         AccountHolder secondaryOwner = null;
         if (accountDTO.getSecondaryOwnerId() != null) {
@@ -88,5 +81,27 @@ public class AdminService {
             savingsAccount = new SavingsAccount(primaryOwner, secondaryOwner, accountDTO.getSecretKey());
         }
         return savingsAccountRepository.save(savingsAccount);
+    }
+
+    public Account addCreditCardAccount(AccountDTO accountDTO) {
+
+        AccountHolder primaryOwner = accountHolderRepository.findById(accountDTO.getPrimaryOwnerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account holder not found"));
+
+        AccountHolder secondaryOwner = null;
+        if (accountDTO.getSecondaryOwnerId() != null) {
+            secondaryOwner = accountHolderRepository.findById(accountDTO.getSecondaryOwnerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account holder not found"));
+        }
+
+        CreditCardAccount creditCardAccount;
+        if (accountDTO.getCreditLimit() != null && accountDTO.getInterestRate() != null) {
+            creditCardAccount = new CreditCardAccount(primaryOwner, secondaryOwner, accountDTO.getCreditLimit(), accountDTO.getInterestRate());
+        } else if (accountDTO.getCreditLimit() != null) {
+            creditCardAccount = new CreditCardAccount(primaryOwner, secondaryOwner, accountDTO.getCreditLimit(), new BigDecimal(0.2));
+        } else if (accountDTO.getInterestRate() != null) {
+            creditCardAccount = new CreditCardAccount(primaryOwner, secondaryOwner, new BigDecimal(100), accountDTO.getInterestRate());
+        } else {
+            creditCardAccount = new CreditCardAccount(primaryOwner, secondaryOwner);
+        }
+        return creditCardAccountRepository.save(creditCardAccount);
     }
 }

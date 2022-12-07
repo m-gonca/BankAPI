@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @Entity
 public class CheckingAccount extends Account {
     @NotNull
-    private BigDecimal minBalance = new BigDecimal(250);
+    private BigDecimal minBalance = new BigDecimal(250).setScale(2, RoundingMode.CEILING);
     @NotNull
-    private BigDecimal monthFee = new BigDecimal(12);
+    private BigDecimal monthFee = new BigDecimal(12).setScale(2, RoundingMode.CEILING);
     private LocalDate creationDate = LocalDate.now();
 
     @Enumerated(EnumType.STRING)

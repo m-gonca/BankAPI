@@ -130,7 +130,7 @@ public class RepositoriesTests {
 
     @Test
     void shouldAddNewCreditCardAccount_FAIL() {
-        assertThrows(ConstraintViolationException.class, () -> creditCardAccountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2, new BigDecimal(5000), new BigDecimal(0.15))));
+        assertThrows(ConstraintViolationException.class, () -> creditCardAccountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2, new BigDecimal( 500000), new BigDecimal(0.15))));
         assertThrows(ConstraintViolationException.class, () -> creditCardAccountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2, new BigDecimal(300), new BigDecimal(0.05))));
     }
 

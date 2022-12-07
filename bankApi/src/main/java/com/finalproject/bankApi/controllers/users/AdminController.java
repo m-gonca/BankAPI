@@ -60,5 +60,9 @@ public class AdminController {
     public Account addNewSavingsAccount(@RequestBody AccountDTO accountDTO){
         return adminService.addSavingsAccount(accountDTO);
     }
-
+    @PostMapping("/add-credit-card-account")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Account addNewCreditCardAccount(@RequestBody AccountDTO accountDTO){
+        return adminService.addCreditCardAccount(accountDTO);
+    }
 }

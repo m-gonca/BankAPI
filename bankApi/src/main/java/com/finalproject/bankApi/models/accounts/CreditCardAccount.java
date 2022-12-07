@@ -12,11 +12,11 @@ import java.math.RoundingMode;
 @Entity
 public class CreditCardAccount extends Account {
     @NotNull
-    @DecimalMax(value = "1000", inclusive = true)
-    private BigDecimal creditLimit = new BigDecimal(100);
+    @DecimalMax(value = "100000", inclusive = true)
+    private BigDecimal creditLimit = new BigDecimal(100).setScale(2, RoundingMode.CEILING);
     @NotNull
     @DecimalMin(value = "0.1", inclusive = true)
-    private BigDecimal interestRate = new BigDecimal(0.2);
+    private BigDecimal interestRate = new BigDecimal(0.2).setScale(2, RoundingMode.CEILING);
 
     public CreditCardAccount() {}
 

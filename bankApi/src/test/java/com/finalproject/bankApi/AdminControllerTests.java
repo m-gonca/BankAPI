@@ -119,4 +119,13 @@ public class AdminControllerTests {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("1000"));
         assertTrue(mvcResult.getResponse().getContentAsString().contains("0.0025"));
     }
+
+    @Test
+    void shouldAddNewCreditCardAccount_whenPostIsPerformed_OK() throws Exception{
+        accountDTO = new AccountDTO(accountHolder1.getId(), accountHolder2.getId(), null, null, null, null, "123456");
+        body = objectMapper.writeValueAsString(accountDTO);
+        MvcResult mvcResult = mockMvc.perform(post("/admin/add-credit-card-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("100"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("0.2"));
+    }
 }

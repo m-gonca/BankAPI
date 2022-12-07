@@ -18,10 +18,10 @@ import java.time.LocalDate;
 public class SavingsAccount extends Account {
     @NotNull
     @DecimalMin(value = "100", inclusive = true)
-    private BigDecimal minBalance = new BigDecimal(1000);
+    private BigDecimal minBalance = new BigDecimal(1000).setScale(2, RoundingMode.CEILING);
     @NotNull
     @DecimalMax(value = "0.5", inclusive = true)
-    private BigDecimal interestRate = new BigDecimal(0.0025);
+    private BigDecimal interestRate = new BigDecimal(0.0025).setScale(2, RoundingMode.CEILING);
 
     private LocalDate creationDate = LocalDate.now();
 

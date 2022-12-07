@@ -26,7 +26,7 @@ public abstract class Account {
     @ManyToOne
     @JoinColumn(name = "secondaryOwner_id")
     private AccountHolder secondaryOwner;
-    private BigDecimal penaltyFee = new BigDecimal(40);
+    private final BigDecimal penaltyFee = new BigDecimal(40);
     private String secretKey;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "sendAccountId")
@@ -80,11 +80,6 @@ public abstract class Account {
 
     public BigDecimal getPenaltyFee() {
         return penaltyFee;
-    }
-
-    public void setPenaltyFee(BigDecimal penaltyFee) {
-        penaltyFee.setScale(2, RoundingMode.CEILING);
-        this.penaltyFee = penaltyFee;
     }
 
     public String getSecretKey() {
