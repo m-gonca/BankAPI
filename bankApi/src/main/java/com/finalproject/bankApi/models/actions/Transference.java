@@ -1,5 +1,6 @@
 package com.finalproject.bankApi.models.actions;
 
+import com.finalproject.bankApi.models.accounts.Account;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,22 +14,20 @@ public class Transference {
     private Long id;
     @NotNull
     private BigDecimal amount;
-    @NotNull
-    private Long sendAccountId;
-    @NotNull
-    private Long receiveAccountId;
-    @NotNull
-    @NotEmpty
-    private String accountSecretKey;
+    @ManyToOne
+    @JoinColumn(name = "send_account_id")
+    private Account sendAccount;
+    @ManyToOne
+    @JoinColumn(name = "receive_account_id")
+    private Account receiveAccount;
 
     public Transference() {
     }
 
-    public Transference(BigDecimal amount, Long sendAccountId, Long receiveAccountId, String accountSecretKey) {
+    public Transference(BigDecimal amount, Account sendAccount, Account receiveAccount) {
         setAmount(amount);
-        setSendAccountId(sendAccountId);
-        setReceiveAccountId(receiveAccountId);
-        setAccountSecretKey(accountSecretKey);
+        setSendAccount(sendAccount);
+        setReceiveAccount(receiveAccount);
     }
 
     public Long getId() {
@@ -43,29 +42,24 @@ public class Transference {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
-
-    public Long getSendAccountId() {
-        return sendAccountId;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
-    public void setSendAccountId(Long sendAccountId) {
-        this.sendAccountId = sendAccountId;
+    public Account getSendAccount() {
+        return sendAccount;
     }
 
-    public Long getReceiveAccountId() {
-        return receiveAccountId;
+    public void setSendAccount(Account sendAccount) {
+        this.sendAccount = sendAccount;
     }
 
-    public void setReceiveAccountId(Long receiveAccountId) {
-        this.receiveAccountId = receiveAccountId;
+    public Account getReceiveAccount() {
+        return receiveAccount;
     }
 
-    public String getAccountSecretKey() {
-        return accountSecretKey;
+    public void setReceiveAccount(Account receiveAccount) {
+        this.receiveAccount = receiveAccount;
     }
 
-    public void setAccountSecretKey(String accountSecretKey) {
-        this.accountSecretKey = accountSecretKey;
-    }
 }

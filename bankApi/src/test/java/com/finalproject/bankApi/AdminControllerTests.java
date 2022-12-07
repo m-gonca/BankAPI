@@ -5,15 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.finalproject.bankApi.controllers.users.AdminController;
 import com.finalproject.bankApi.embedded.Address;
-import com.finalproject.bankApi.models.accounts.Account;
+import com.finalproject.bankApi.models.accounts.*;
 import com.finalproject.bankApi.models.dtos.AccountDTO;
+import com.finalproject.bankApi.models.dtos.BalanceDTO;
 import com.finalproject.bankApi.models.users.*;
-import com.finalproject.bankApi.repositories.accounts.CheckingAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.CreditCardAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.SavingsAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.StudentAccountRepository;
+import com.finalproject.bankApi.repositories.accounts.*;
 import com.finalproject.bankApi.repositories.users.AccountHolderRepository;
 import com.finalproject.bankApi.repositories.users.AdminRepository;
+import com.finalproject.bankApi.repositories.users.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,14 +21,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -48,40 +53,53 @@ public class AdminControllerTests {
     SavingsAccountRepository savingsAccountRepository;
     @Autowired
     StudentAccountRepository studentAccountRepository;
-    
-    private MockMvc mockMvc;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private Module module = new JavaTimeModule();
     @Autowired
     private AccountHolderRepository accountHolderRepository;
     
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private Module module = new JavaTimeModule();
+    private MockMvc mockMvc;
+    
     AccountHolder accountHolder1;
     AccountHolder accountHolder2;
+    AccountHolder accountHolder3;
     
     AccountDTO accountDTO;
+    BalanceDTO balanceDTO;
     String body;
+    MvcResult mvcResult;
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     void setup(){
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         accountHolder1 = new AccountHolder("La Rosalia", "123456", LocalDate.of(1992, 8,14), new Address("Calle Palasio de Gaudi", 04256L, "Barcelona", "Spain"), new Address("Calle Palasio de Gaudi", 04256L, "Barcelona", "Spain"));
         accountHolder2 = new AccountHolder("The Weekend", "123456", LocalDate.of(1985, 5,10), new Address("Calle Streetsita", 0266L, "NY", "USA"), new Address("Calle Strotsota", 0256L, "LA", "USA"));
-        accountHolderRepository.saveAll(List.of(accountHolder1, accountHolder2));
+        accountHolder3 = new AccountHolder("Billie Eilish", "123456", LocalDate.of(2001, 5,10), new Address("Calle Streetsita", 0266L, "NY", "USA"), new Address("Calle Strotsota", 0256L, "LA", "USA"));
+        accountHolderRepository.saveAll(List.of(accountHolder1, accountHolder2, accountHolder3));
+        
+        accountRepository.saveAll(List.of(
+                new CheckingAccount(accountHolder1, null, "123456"),
+                new StudentAccount(accountHolder3, accountHolder2, "123456"),
+                new SavingsAccount(accountHolder1, null, "123456"),
+                new CreditCardAccount(accountHolder1, accountHolder2)
+        ));
     }
     
     @AfterEach
     void tearDown(){
-        checkingAccountRepository.deleteAll();
-        studentAccountRepository.deleteAll();
-        accountHolderRepository.deleteAll();
-        adminRepository.deleteAll();
+        accountRepository.deleteAll();
+        userRepository.deleteAll();
     }
     
     @Test
     void shouldAddNewAdmin_whenPostIsPerformed_OK() throws Exception {
         Admin admin = new Admin("Damon Albarn", "123456");
         body = objectMapper.writeValueAsString(admin);
-        MvcResult mvcResult = mockMvc.perform(post("/admin/add-admin").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/admin/add-admin").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Damon Albarn"));
     }
 
@@ -90,7 +108,7 @@ public class AdminControllerTests {
         AccountHolder accountHolder = new AccountHolder("Neville Longbottom", "123456", LocalDate.of(1990,03,02), new Address("Calle Whatever", 01256L, "London", "UK"), new Address("Calle Whatever", 01256L, "London", "UK"));
         objectMapper.registerModule(module);
         body = objectMapper.writeValueAsString(accountHolder);
-        MvcResult mvcResult = mockMvc.perform(post("/admin/add-account-holder").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/admin/add-account-holder").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Neville Longbottom"));
     }
 
@@ -98,7 +116,7 @@ public class AdminControllerTests {
     void shouldAddNewThirdParty_whenPostIsPerformed_OK() throws Exception {
         ThirdParty thirdParty = new ThirdParty("Cafeteria");
         body = objectMapper.writeValueAsString(thirdParty);
-        MvcResult mvcResult = mockMvc.perform(post("/admin/add-third-party").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/admin/add-third-party").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Cafeteria"));
     }
     
@@ -106,7 +124,7 @@ public class AdminControllerTests {
     void shouldAddNewCheckingAccount_whenPostIsPerformed_OK() throws Exception{
         accountDTO = new AccountDTO(accountHolder1.getId(), accountHolder2.getId(), null, null, null, null, "123456");
         body = objectMapper.writeValueAsString(accountDTO);
-        MvcResult mvcResult = mockMvc.perform(post("/admin/add-checking-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/admin/add-checking-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("La Rosalia"));
         assertTrue(mvcResult.getResponse().getContentAsString().contains("The Weekend"));
     }
@@ -115,7 +133,8 @@ public class AdminControllerTests {
     void shouldAddNewSavingsAccount_whenPostIsPerformed_OK() throws Exception{
         accountDTO = new AccountDTO(accountHolder1.getId(), accountHolder2.getId(), null, null, null, null, "123456");
         body = objectMapper.writeValueAsString(accountDTO);
-        MvcResult mvcResult = mockMvc.perform(post("/admin/add-savings-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/admin/add-savings-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        System.err.println(mvcResult.getResponse().getContentAsString());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("1000"));
         assertTrue(mvcResult.getResponse().getContentAsString().contains("0.0025"));
     }
@@ -124,8 +143,24 @@ public class AdminControllerTests {
     void shouldAddNewCreditCardAccount_whenPostIsPerformed_OK() throws Exception{
         accountDTO = new AccountDTO(accountHolder1.getId(), accountHolder2.getId(), null, null, null, null, "123456");
         body = objectMapper.writeValueAsString(accountDTO);
-        MvcResult mvcResult = mockMvc.perform(post("/admin/add-credit-card-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/admin/add-credit-card-account").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("100"));
         assertTrue(mvcResult.getResponse().getContentAsString().contains("0.2"));
+    }
+
+    @Test
+    void shouldShowAccount_whenGetIsPerformed_OK() throws Exception{
+        Long id = 1L;
+        mvcResult = mockMvc.perform(get("/admin/client-account/{id}", id)).andExpect(status().isOk()).andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("La Rosalia"));
+    }
+
+    @Test
+    void shouldUpdateAccountBalance_whenPatchIsPerformed_OK() throws Exception{
+        System.err.println(accountRepository.findById(2L).get().getBalance());
+        balanceDTO = new BalanceDTO(2L, new BigDecimal(20000));
+        body = objectMapper.writeValueAsString(balanceDTO);
+        mvcResult = mockMvc.perform(patch("/admin/client-account/update-balance").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("20000"));
     }
 }

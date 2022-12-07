@@ -1,10 +1,10 @@
 package com.finalproject.bankApi.models.accounts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finalproject.bankApi.models.actions.ThirdPartyTransference;
 import com.finalproject.bankApi.models.actions.Transference;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
@@ -28,18 +28,23 @@ public abstract class Account {
     private AccountHolder secondaryOwner;
     private final BigDecimal penaltyFee = new BigDecimal(40);
     private String secretKey;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sendAccountId")
-    private List<Transference> transference = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "accountId")
+    @JsonIgnore
+    @OneToMany(mappedBy = "sendAccount", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Transference> sentTransference = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiveAccount", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Transference> receivedTransference = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ThirdPartyTransference> thirdPartyTransference = new ArrayList<>();
 
-    public Account() {}
+    public Account() {
+    }
 
     public Account(AccountHolder primaryOwner) {
         setPrimaryOwner(primaryOwner);
     }
+
     public Account(AccountHolder primaryOwner, AccountHolder secondaryOwner) {
         setPrimaryOwner(primaryOwner);
         setSecondaryOwner(secondaryOwner);
@@ -90,12 +95,20 @@ public abstract class Account {
         this.secretKey = secretKey;
     }
 
-    public List<Transference> getTransference() {
-        return transference;
+    public List<Transference> getSentTransference() {
+        return sentTransference;
     }
 
-    public void setTransference(List<Transference> transference) {
-        this.transference = transference;
+    public void setSentTransference(List<Transference> sentTransference) {
+        this.sentTransference = sentTransference;
+    }
+
+    public List<Transference> getReceivedTransference() {
+        return receivedTransference;
+    }
+
+    public void setReceivedTransference(List<Transference> receivedTransference) {
+        this.receivedTransference = receivedTransference;
     }
 
     public List<ThirdPartyTransference> getThirdPartyTransference() {
@@ -105,6 +118,4 @@ public abstract class Account {
     public void setThirdPartyTransference(List<ThirdPartyTransference> thirdPartyTransference) {
         this.thirdPartyTransference = thirdPartyTransference;
     }
-    
-
 }

@@ -21,7 +21,7 @@ public class SavingsAccount extends Account {
     private BigDecimal minBalance = new BigDecimal(1000).setScale(2, RoundingMode.CEILING);
     @NotNull
     @DecimalMax(value = "0.5", inclusive = true)
-    private BigDecimal interestRate = new BigDecimal(0.0025).setScale(2, RoundingMode.CEILING);
+    private BigDecimal interestRate = new BigDecimal(0.0025).setScale(4, RoundingMode.HALF_DOWN);
 
     private LocalDate creationDate = LocalDate.now();
 

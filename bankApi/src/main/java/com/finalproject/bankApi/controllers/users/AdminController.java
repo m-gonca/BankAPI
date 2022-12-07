@@ -3,13 +3,11 @@ package com.finalproject.bankApi.controllers.users;
 import com.finalproject.bankApi.models.accounts.Account;
 import com.finalproject.bankApi.models.accounts.CheckingAccount;
 import com.finalproject.bankApi.models.dtos.AccountDTO;
+import com.finalproject.bankApi.models.dtos.BalanceDTO;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import com.finalproject.bankApi.models.users.Admin;
 import com.finalproject.bankApi.models.users.ThirdParty;
-import com.finalproject.bankApi.repositories.accounts.CheckingAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.CreditCardAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.SavingsAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.StudentAccountRepository;
+import com.finalproject.bankApi.repositories.accounts.*;
 import com.finalproject.bankApi.repositories.users.AccountHolderRepository;
 import com.finalproject.bankApi.repositories.users.AdminRepository;
 import com.finalproject.bankApi.services.users.AccountHolderService;
@@ -18,6 +16,7 @@ import com.finalproject.bankApi.services.users.ThirdPartyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/admin")
@@ -30,6 +29,8 @@ public class AdminController {
     AccountHolderService accountHolderService;
     @Autowired
     ThirdPartyService thirdPartyService;
+    @Autowired
+    private AccountRepository accountRepository;
 
 
     @PostMapping("/add-admin")
@@ -48,7 +49,6 @@ public class AdminController {
         return thirdPartyService.addThirdParty(thirdParty);
     }
     
-    
     @PostMapping("/add-checking-account")
     @ResponseStatus(HttpStatus.CREATED)
     public Account addNewCheckingAccount(@RequestBody AccountDTO accountDTO){
@@ -65,4 +65,17 @@ public class AdminController {
     public Account addNewCreditCardAccount(@RequestBody AccountDTO accountDTO){
         return adminService.addCreditCardAccount(accountDTO);
     }
+    
+    @GetMapping("/client-account/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Account findAccountById(@PathVariable Long id) {
+        return adminService.getAccount(id);
+    }
+    
+    @PatchMapping("/client-account/update-balance")
+    @ResponseStatus(HttpStatus.OK)
+    public Account updateAccountBalanceById(@RequestBody BalanceDTO balanceDTO){
+        return adminService.updateAccountBalance(balanceDTO);
+    }
+    
 }

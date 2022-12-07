@@ -2,17 +2,16 @@ package com.finalproject.bankApi.services.users;
 
 import com.finalproject.bankApi.models.accounts.*;
 import com.finalproject.bankApi.models.dtos.AccountDTO;
+import com.finalproject.bankApi.models.dtos.BalanceDTO;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import com.finalproject.bankApi.models.users.Admin;
-import com.finalproject.bankApi.repositories.accounts.CheckingAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.CreditCardAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.SavingsAccountRepository;
-import com.finalproject.bankApi.repositories.accounts.StudentAccountRepository;
+import com.finalproject.bankApi.repositories.accounts.*;
 import com.finalproject.bankApi.repositories.users.AccountHolderRepository;
 import com.finalproject.bankApi.repositories.users.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -33,7 +32,9 @@ public class AdminService {
     @Autowired
     AdminRepository adminRepository;
     @Autowired
-    private AccountHolderRepository accountHolderRepository;
+    AccountHolderRepository accountHolderRepository;
+    @Autowired
+    AccountRepository accountRepository;
 
     public Admin addAdmin(Admin admin) {
         return adminRepository.save(admin);
@@ -104,4 +105,20 @@ public class AdminService {
         }
         return creditCardAccountRepository.save(creditCardAccount);
     }
+    
+    public Account getAccount(Long id){
+        return accountRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+    }
+
+    public Account updateAccountBalance(BalanceDTO balanceDTO) {
+        Account account = accountRepository.findById(balanceDTO.getAccountId()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        //System.err.println(account.toString());
+        BigDecimal newBalance = balanceDTO.getNewBalance();
+        account.setBalance(newBalance);
+        return accountRepository.save(account);
+    }
+    
+    
+    
+    
 }

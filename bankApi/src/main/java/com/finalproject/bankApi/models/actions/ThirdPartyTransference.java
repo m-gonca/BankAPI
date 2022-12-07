@@ -1,6 +1,7 @@
 package com.finalproject.bankApi.models.actions;
 
 import com.finalproject.bankApi.models.accounts.Account;
+import com.finalproject.bankApi.models.users.ThirdParty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -15,30 +16,21 @@ public class ThirdPartyTransference {
     @NotNull
     private BigDecimal amount;
     @NotNull
-    private Long accountId;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
     @NotNull
-    @NotEmpty
-    private String accountSecretKey;
-    @NotNull
-    @NotEmpty
-    private String hashKey;
+    @ManyToOne
+    //@JoinColumn(name = "thirdParty_id")
+    private ThirdParty thirdParty;
 
     public ThirdPartyTransference() {
     }
 
-    public ThirdPartyTransference(BigDecimal amount, Long accountId, String accountSecretKey, String hashKey) {
-        setAmount(amount);
-        setAccountId(accountId);
-        setAccountSecretKey(accountSecretKey);
-        setHashKey(hashKey);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public ThirdPartyTransference(BigDecimal amount, Account account, ThirdParty thirdParty) {
+        this.amount = amount;
+        this.account = account;
+        this.thirdParty = thirdParty;
     }
 
     public BigDecimal getAmount() {
@@ -49,27 +41,19 @@ public class ThirdPartyTransference {
         this.amount = amount;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
-    public String getAccountSecretKey() {
-        return accountSecretKey;
+    public ThirdParty getThirdParty() {
+        return thirdParty;
     }
 
-    public void setAccountSecretKey(String accountSecretKey) {
-        this.accountSecretKey = accountSecretKey;
-    }
-
-    public String getHashKey() {
-        return hashKey;
-    }
-
-    public void setHashKey(String hashKey) {
-        this.hashKey = hashKey;
+    public void setThirdParty(ThirdParty thirdParty) {
+        this.thirdParty = thirdParty;
     }
 }
