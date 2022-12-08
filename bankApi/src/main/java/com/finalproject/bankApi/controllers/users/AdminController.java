@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -29,8 +31,8 @@ public class AdminController {
     AccountHolderService accountHolderService;
     @Autowired
     ThirdPartyService thirdPartyService;
-    @Autowired
-    private AccountRepository accountRepository;
+   /* @Autowired
+    private AccountRepository accountRepository;*/
 
 
     @PostMapping("/add-admin")
@@ -71,11 +73,23 @@ public class AdminController {
     public Account findAccountById(@PathVariable Long id) {
         return adminService.getAccount(id);
     }
+    @GetMapping("/client-account/balance/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal findAccountBalance(@PathVariable Long id) {
+        return adminService.getAccountBalance(id);
+    }
     
     @PatchMapping("/client-account/update-balance")
     @ResponseStatus(HttpStatus.OK)
     public Account updateAccountBalanceById(@RequestBody BalanceDTO balanceDTO){
         return adminService.updateAccountBalance(balanceDTO);
     }
+    
+    @DeleteMapping("/delete-account/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAccount(@PathVariable Long id){
+        adminService.deleteAccount(id);
+    }
+    
     
 }

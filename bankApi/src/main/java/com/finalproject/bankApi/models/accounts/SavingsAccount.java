@@ -13,22 +13,26 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Entity
 public class SavingsAccount extends Account {
     @NotNull
     @DecimalMin(value = "100", inclusive = true)
-    private BigDecimal minBalance = new BigDecimal(1000).setScale(2, RoundingMode.CEILING);
+    private BigDecimal minBalance = new BigDecimal(1000).setScale(2, RoundingMode.HALF_DOWN);
     @NotNull
     @DecimalMax(value = "0.5", inclusive = true)
     private BigDecimal interestRate = new BigDecimal(0.0025).setScale(4, RoundingMode.HALF_DOWN);
 
-    private LocalDate creationDate = LocalDate.now();
+    private final LocalDate creationDate = LocalDate.now();
+
+    private LocalDate lastProfitUpdate;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    public SavingsAccount() {}
+    public SavingsAccount() {
+    }
 
 
     public SavingsAccount(AccountHolder primaryOwner, AccountHolder secondaryOwner, String secretKey) {
@@ -48,7 +52,7 @@ public class SavingsAccount extends Account {
     }
 
     public void setMinBalance(BigDecimal minBalance) {
-        minBalance.setScale(2, RoundingMode.CEILING);
+        minBalance.setScale(2, RoundingMode.HALF_DOWN);
         this.minBalance = minBalance;
     }
 
@@ -57,16 +61,12 @@ public class SavingsAccount extends Account {
     }
 
     public void setInterestRate(BigDecimal interestRate) {
-        interestRate.setScale(2, RoundingMode.CEILING);
+        interestRate.setScale(2, RoundingMode.HALF_DOWN);
         this.interestRate = interestRate;
     }
 
     public LocalDate getCreationDate() {
         return creationDate;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
     }
 
     public Status getStatus() {
@@ -75,5 +75,28 @@ public class SavingsAccount extends Account {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public LocalDate getLastProfitUpdate() {
+        return lastProfitUpdate;
+    }
+
+    public void setLastProfitUpdate(LocalDate lastProfitUpdate) {
+        this.lastProfitUpdate = lastProfitUpdate;
+    }
+
+    public void checkInterests() {
+        Period period;
+        if (lastProfitUpdate == null) {
+            period = Period.between(creationDate, LocalDate.now());
+        } 
+        else {
+            period = Period.between(lastProfitUpdate, LocalDate.now());
+        }
+        if (period.getYears() == 1) {
+            BigDecimal profit = super.getBalance().multiply(interestRate);
+            super.setBalance(super.getBalance().add(profit).setScale(2, RoundingMode.HALF_DOWN));
+            lastProfitUpdate = LocalDate.now();
+        }
     }
 }

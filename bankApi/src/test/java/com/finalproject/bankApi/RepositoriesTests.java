@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -128,9 +129,29 @@ public class RepositoriesTests {
     }
 
     @Test
+    void shouldAddInterestsToSavingsAccount_OK(){
+        SavingsAccount savings = new SavingsAccount(accountHolder1, null, "123456");
+        savingsAccountRepository.save(savings);
+        savings.setBalance(new BigDecimal(100));
+        savings.setLastProfitUpdate(LocalDate.now().minusYears(1));
+        savings.checkInterests();
+        assertEquals(new BigDecimal(100.25), savings.getBalance());
+    }
+
+    @Test
     void shouldAddNewCreditCardAccount_FAIL() {
         assertThrows(ConstraintViolationException.class, () -> accountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2, new BigDecimal( 500000), new BigDecimal(0.15))));
         assertThrows(ConstraintViolationException.class, () -> accountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2, new BigDecimal(300), new BigDecimal(0.05))));
+    }
+    
+    @Test
+    void shouldAddInterestsToCreditCardAccount_OK(){
+        CreditCardAccount creditCard = new CreditCardAccount(accountHolder1, null);
+        creditCardAccountRepository.save(creditCard);
+        creditCard.setBalance(new BigDecimal(100));
+        creditCard.setLastProfitUpdate(LocalDate.now().minusMonths(1));
+        creditCard.checkInterests();
+        assertEquals(new BigDecimal(120.00), creditCard.getBalance());
     }
 
     @Test

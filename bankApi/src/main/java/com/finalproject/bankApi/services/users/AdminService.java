@@ -109,16 +109,33 @@ public class AdminService {
     public Account getAccount(Long id){
         return accountRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
     }
+    
+    public BigDecimal getAccountBalance(Long id){
+        Account account = accountRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        if(account instanceof SavingsAccount){
+            savingsAccountRepository.findById(id).get().checkInterests();
+        }
+        else if( account instanceof CreditCardAccount ){
+            creditCardAccountRepository.findById(id).get().checkInterests();
+        }
+        return account.getBalance();
+    }
 
     public Account updateAccountBalance(BalanceDTO balanceDTO) {
         Account account = accountRepository.findById(balanceDTO.getAccountId()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
-        //System.err.println(account.toString());
+        if(account instanceof SavingsAccount){
+            savingsAccountRepository.findById(balanceDTO.getAccountId()).get().checkInterests();
+        }
+        else if( account instanceof CreditCardAccount ){
+            creditCardAccountRepository.findById(balanceDTO.getAccountId()).get().checkInterests();
+        }
         BigDecimal newBalance = balanceDTO.getNewBalance();
         account.setBalance(newBalance);
         return accountRepository.save(account);
     }
     
-    
-    
+    public void deleteAccount(Long id){
+        accountRepository.delete(accountRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found")));
+    }
     
 }

@@ -12,10 +12,10 @@ import java.time.LocalDate;
 @Entity
 public class CheckingAccount extends Account {
     @NotNull
-    private BigDecimal minBalance = new BigDecimal(250).setScale(2, RoundingMode.CEILING);
+    private BigDecimal minBalance = new BigDecimal(250).setScale(2, RoundingMode.HALF_DOWN);
     @NotNull
-    private BigDecimal monthFee = new BigDecimal(12).setScale(2, RoundingMode.CEILING);
-    private LocalDate creationDate = LocalDate.now();
+    private BigDecimal monthFee = new BigDecimal(12).setScale(2, RoundingMode.HALF_DOWN);
+    private final LocalDate creationDate = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
@@ -32,7 +32,7 @@ public class CheckingAccount extends Account {
     }
 
     public void setMinBalance(BigDecimal minBalance) {
-        minBalance.setScale(2, RoundingMode.CEILING);
+        minBalance.setScale(2, RoundingMode.HALF_DOWN);
         this.minBalance = minBalance;
     }
 
@@ -41,18 +41,14 @@ public class CheckingAccount extends Account {
     }
 
     public void setMonthFee(BigDecimal monthFee) {
-        monthFee.setScale(2, RoundingMode.CEILING);
+        monthFee.setScale(2, RoundingMode.HALF_DOWN);
         this.monthFee = monthFee;
     }
 
     public LocalDate getCreationDate() {
         return creationDate;
     }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
-
+    
     public Status getStatus() {
         return status;
     }

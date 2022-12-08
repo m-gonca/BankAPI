@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.finalproject.bankApi.embedded.Address;
 import com.finalproject.bankApi.models.accounts.Account;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,10 +13,12 @@ import java.util.List;
 
 @Entity
 public class AccountHolder extends User {
-    
+    @NotNull
     private LocalDate birthDate;
+    @NotNull
     @Embedded
     private Address primaryAddress;
+    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "address", column = @Column(name = "mailing_address")),

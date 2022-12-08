@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -157,10 +158,16 @@ public class AdminControllerTests {
 
     @Test
     void shouldUpdateAccountBalance_whenPatchIsPerformed_OK() throws Exception{
-        System.err.println(accountRepository.findById(2L).get().getBalance());
-        balanceDTO = new BalanceDTO(2L, new BigDecimal(20000));
+        balanceDTO = new BalanceDTO(1L, new BigDecimal(20000));
         body = objectMapper.writeValueAsString(balanceDTO);
         mvcResult = mockMvc.perform(patch("/admin/client-account/update-balance").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("20000"));
+    }
+    
+    @Test
+    void shouldDeleteAccount_whenDeleteIsPerformed_OK() throws Exception{
+        Long id = 1L;
+        mvcResult = mockMvc.perform(delete("/admin/delete-account/{id}", id)).andExpect(status().isOk()).andReturn();
+        assertFalse(accountRepository.findById(1L).isPresent());
     }
 }

@@ -26,7 +26,7 @@ public abstract class Account {
     @ManyToOne
     @JoinColumn(name = "secondaryOwner_id")
     private AccountHolder secondaryOwner;
-    private final BigDecimal penaltyFee = new BigDecimal(40);
+    private final BigDecimal penaltyFee = new BigDecimal(40).setScale(2, RoundingMode.HALF_DOWN);
     private String secretKey;
     @JsonIgnore
     @OneToMany(mappedBy = "sendAccount", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

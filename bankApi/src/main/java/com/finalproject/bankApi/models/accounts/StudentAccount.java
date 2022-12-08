@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Entity
 public class StudentAccount extends Account {
-    private LocalDate creationDate = LocalDate.now();
+    private final LocalDate creationDate = LocalDate.now();
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
@@ -24,10 +24,6 @@ public class StudentAccount extends Account {
 
     public LocalDate getCreationDate() {
         return creationDate;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
     }
 
     public Status getStatus() {
