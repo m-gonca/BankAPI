@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -117,5 +118,17 @@ public abstract class Account {
 
     public void setThirdPartyTransference(List<ThirdPartyTransference> thirdPartyTransference) {
         this.thirdPartyTransference = thirdPartyTransference;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account account)) return false;
+        return Objects.equals(getId(), account.getId()) && Objects.equals(getBalance(), account.getBalance()) && Objects.equals(getPrimaryOwner(), account.getPrimaryOwner()) && Objects.equals(getSecondaryOwner(), account.getSecondaryOwner()) && Objects.equals(getPenaltyFee(), account.getPenaltyFee()) && Objects.equals(getSecretKey(), account.getSecretKey()) && Objects.equals(getSentTransference(), account.getSentTransference()) && Objects.equals(getReceivedTransference(), account.getReceivedTransference()) && Objects.equals(getThirdPartyTransference(), account.getThirdPartyTransference());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getBalance(), getPrimaryOwner(), getSecondaryOwner(), getPenaltyFee(), getSecretKey(), getSentTransference(), getReceivedTransference(), getThirdPartyTransference());
     }
 }

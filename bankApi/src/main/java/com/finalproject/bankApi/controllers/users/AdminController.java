@@ -1,5 +1,6 @@
 package com.finalproject.bankApi.controllers.users;
 
+import com.finalproject.bankApi.controllers.users.interfaces.AdminControllerInt;
 import com.finalproject.bankApi.models.accounts.Account;
 import com.finalproject.bankApi.models.accounts.CheckingAccount;
 import com.finalproject.bankApi.models.dtos.AccountDTO;
@@ -22,7 +23,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController implements AdminControllerInt {
     
 
     @Autowired
@@ -31,9 +32,6 @@ public class AdminController {
     AccountHolderService accountHolderService;
     @Autowired
     ThirdPartyService thirdPartyService;
-   /* @Autowired
-    private AccountRepository accountRepository;*/
-
 
     @PostMapping("/add-admin")
     @ResponseStatus(HttpStatus.CREATED)

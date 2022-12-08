@@ -28,6 +28,7 @@ public class Transference {
         setAmount(amount);
         setSendAccount(sendAccount);
         setReceiveAccount(receiveAccount);
+
     }
 
     public Long getId() {
@@ -61,5 +62,7 @@ public class Transference {
     public void setReceiveAccount(Account receiveAccount) {
         this.receiveAccount = receiveAccount;
     }
+    
+
 
 }

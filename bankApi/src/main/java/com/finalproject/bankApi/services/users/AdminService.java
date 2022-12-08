@@ -107,7 +107,14 @@ public class AdminService {
     }
     
     public Account getAccount(Long id){
-        return accountRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        Account account = accountRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        if(account instanceof SavingsAccount){
+            savingsAccountRepository.findById(id).get().checkInterests();
+        }
+        else if( account instanceof CreditCardAccount ){
+            creditCardAccountRepository.findById(id).get().checkInterests();
+        }
+        return account;
     }
     
     public BigDecimal getAccountBalance(Long id){

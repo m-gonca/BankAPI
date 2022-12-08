@@ -30,10 +30,10 @@ public class AccountHolder extends User {
     
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "primaryOwner")
-    private List<Account> primaryOwnerAccounts = new ArrayList<>();
+    private List<Account> primaryOwnerAccount = new ArrayList<>();
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "secondaryOwner")
-    private List<Account> secondaryOwnerAccounts = new ArrayList<>();
+    private List<Account> secondaryOwnerAccount = new ArrayList<>();
     
     public AccountHolder() {}
 
@@ -68,19 +68,19 @@ public class AccountHolder extends User {
         this.mailAddress = mailAddress;
     }
 
-    public List<Account> getPrimaryOwnerAccounts() {
-        return primaryOwnerAccounts;
+    public List<Account> getPrimaryOwnerAccount() {
+        return primaryOwnerAccount;
     }
 
-    public void setPrimaryOwnerAccounts(List<Account> primaryOwnerAccounts) {
-        this.primaryOwnerAccounts = primaryOwnerAccounts;
+    public void setPrimaryOwnerAccount(List<Account> primaryOwnerAccount) {
+        this.primaryOwnerAccount = primaryOwnerAccount;
     }
 
-    public List<Account> getSecondaryOwnerAccounts() {
-        return secondaryOwnerAccounts;
+    public List<Account> getSecondaryOwnerAccount() {
+        return secondaryOwnerAccount;
     }
 
-    public void setSecondaryOwnerAccounts(List<Account> secondaryOwnerAccounts) {
-        this.secondaryOwnerAccounts = secondaryOwnerAccounts;
+    public void setSecondaryOwnerAccount(List<Account> secondaryOwnerAccount) {
+        this.secondaryOwnerAccount = secondaryOwnerAccount;
     }
 }

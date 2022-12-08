@@ -1,24 +1,28 @@
 package com.finalproject.bankApi.controllers.users.interfaces;
 
 import com.finalproject.bankApi.models.accounts.Account;
+import com.finalproject.bankApi.models.dtos.AccountDTO;
+import com.finalproject.bankApi.models.dtos.BalanceDTO;
 import com.finalproject.bankApi.models.users.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 
 public interface AdminControllerInt {
-    //User creation
+
     Admin addNewAdmin(Admin admin);
-    Account addNewAccountHolder(AccountHolder accountHolder);
-    void deleteAccountHolder(AccountHolder accountHolder);
-    Account addNewThirdParty(ThirdParty thirdParty);
-    void deleteThirdParty(ThirdParty thirdParty);
+    AccountHolder addNewAccountHolder(AccountHolder accountHolder);
+    ThirdParty addNewThirdParty(ThirdParty thirdParty);
+   // void deleteAccountHolder(AccountHolder accountHolder);
+   // void deleteThirdParty(ThirdParty thirdParty);
     
     //Account management
-    Account addNewCheckingAccount(Account account);
-    Account addNewSavingsAccount(Account account);
-    Account addNewCreditCardAccount(Account account);
-    Account updateAccount(Account account);
-    Account updateAccountBalance(BigDecimal balance);
-    void deleteAccount(Account account);
+    Account addNewCheckingAccount(AccountDTO accountDTO);
+    Account addNewSavingsAccount(AccountDTO accountDTO);
+    Account addNewCreditCardAccount(AccountDTO accountDTO);
+    BigDecimal findAccountBalance(Long id);
+    Account findAccountById(Long id);
+    Account updateAccountBalanceById(BalanceDTO balanceDTO);
+    void deleteAccount(Long id);
 
 }
