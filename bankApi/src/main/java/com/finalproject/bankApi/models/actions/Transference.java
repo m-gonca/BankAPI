@@ -28,7 +28,6 @@ public class Transference {
         setAmount(amount);
         setSendAccount(sendAccount);
         setReceiveAccount(receiveAccount);
-
     }
 
     public Long getId() {
