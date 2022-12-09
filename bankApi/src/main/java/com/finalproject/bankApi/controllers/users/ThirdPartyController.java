@@ -18,8 +18,6 @@ public class ThirdPartyController implements ThirdPartyControllerInt {
     @PostMapping("/transfer-money")
     @ResponseStatus(HttpStatus.CREATED)
     public ThirdPartyTransference makeThirdPartyTransference(@RequestHeader String thirdPartyKey, @RequestBody ThirdPartyTransferenceDTO transferenceDTO) {
-
         return thirdPartyService.addTransference(thirdPartyKey, transferenceDTO);
-
     }
 }
