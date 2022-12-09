@@ -1,7 +1,5 @@
 package com.finalproject.bankApi.models.dtos;
 
-import com.finalproject.bankApi.models.accounts.Account;
-import com.finalproject.bankApi.models.users.AccountHolder;
 
 import java.math.BigDecimal;
 

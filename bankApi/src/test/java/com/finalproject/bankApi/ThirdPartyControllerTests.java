@@ -10,8 +10,11 @@ import com.finalproject.bankApi.models.dtos.BalanceDTO;
 import com.finalproject.bankApi.models.dtos.ThirdPartyTransferenceDTO;
 import com.finalproject.bankApi.models.dtos.TransferenceDTO;
 import com.finalproject.bankApi.models.users.AccountHolder;
+import com.finalproject.bankApi.models.users.ThirdParty;
 import com.finalproject.bankApi.repositories.accounts.*;
+import com.finalproject.bankApi.repositories.transferences.ThirdPartyTransferenceRepository;
 import com.finalproject.bankApi.repositories.users.AccountHolderRepository;
+import com.finalproject.bankApi.repositories.users.ThirdPartyRepository;
 import com.finalproject.bankApi.repositories.users.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +65,12 @@ public class ThirdPartyControllerTests {
     
     String body;
     MvcResult mvcResult;
+    ThirdParty thirdParty;
     ThirdPartyTransferenceDTO thirdPartyTransferenceDTO;
+    @Autowired
+    private ThirdPartyRepository thirdPartyRepository;
+    @Autowired
+    private ThirdPartyTransferenceRepository thirdPartyTransferenceRepository;
 
     @BeforeEach
     void setup() {
@@ -78,6 +86,8 @@ public class ThirdPartyControllerTests {
                 new SavingsAccount(accountHolder1, null, "123456"),
                 new CreditCardAccount(accountHolder1, accountHolder2)
         ));
+        thirdParty = new ThirdParty("Cajero");
+        thirdPartyRepository.save(thirdParty);
     }
 
     @AfterEach
@@ -87,7 +97,7 @@ public class ThirdPartyControllerTests {
     }
     
     @Test
-    void shouldMakeThirdPartyTransferenceAddingMoney_WhenPostIsPerformed_OK(){
+    void shouldMakeThirdPartyTransferenceAddingMoney_WhenPostIsPerformed_OK() throws Exception{
         thirdPartyTransferenceDTO = new ThirdPartyTransferenceDTO(new BigDecimal(100), 1L, "123456");
         body = objectMapper.writeValueAsString(thirdPartyTransferenceDTO);
         //Setting an amount of money in the 1L account
@@ -96,16 +106,17 @@ public class ThirdPartyControllerTests {
         accountRepository.save(account);
 
         //Testing if the trans from thirdParty to 1L is done
-        mvcResult = mockMvc.perform(post("/third-party/transfer-money").header("123456").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/third-party/transfer-money").header("thirdPartyKey", "123456").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         
         
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("100.00"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("100"));
+        assertEquals(1, thirdPartyTransferenceRepository.findAll().size());
         assertEquals(new BigDecimal("600.00"), accountRepository.findById(1L).get().getBalance());
         
     }
 
     @Test
-    void shouldMakeThirdPartyTransferenceSubstractingMoney_WhenPostIsPerformed_OK(){
+    void shouldMakeThirdPartyTransferenceSubtractingMoney_WhenPostIsPerformed_OK() throws Exception{
         thirdPartyTransferenceDTO = new ThirdPartyTransferenceDTO(new BigDecimal(-100), 1L, "123456");
         body = objectMapper.writeValueAsString(thirdPartyTransferenceDTO);
         //Setting an amount of money in the 1L account
@@ -114,10 +125,11 @@ public class ThirdPartyControllerTests {
         accountRepository.save(account);
 
         //Testing if the trans from thirdParty to 1L is done
-        mvcResult = mockMvc.perform(post("/third-party/transfer-money").header("123456").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
+        mvcResult = mockMvc.perform(post("/third-party/transfer-money").header("thirdPartyKey", "123456").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
 
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("-100.00"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("-100"));
+        assertEquals(1, thirdPartyTransferenceRepository.findAll().size());
         assertEquals(new BigDecimal("400.00"), accountRepository.findById(1L).get().getBalance());
 
     }

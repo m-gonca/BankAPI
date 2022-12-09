@@ -38,10 +38,15 @@ public class ThirdPartyService {
         Account account;
         //Find the account
         account = accountRepository.findByIdAndSecretKey(transferenceDTO.getAccountId(), transferenceDTO.getSecretKey()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        System.err.println(account);
+        
 
         //Find third Party
         ThirdParty thirdParty = thirdPartyRepository.findByPassword(thirdPartyKey).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ThirdParty not found"));
+        System.err.println(thirdParty);
+        
         if (transferenceDTO.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            System.err.println("he entrado en trans positiva");
             //ThirdParty is sending money to account
             //Check if penalty fee has to be applied
             if (account instanceof CheckingAccount) {
@@ -61,20 +66,27 @@ public class ThirdPartyService {
             return thirdPartyTransferenceRepository.save(new ThirdPartyTransference(transferenceDTO.getAmount(), account, thirdParty));
 
         } else if (transferenceDTO.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            System.err.println("he entrado en trans negativa");
             //ThirdParty is asking money to account
             if (account instanceof CheckingAccount) {
+                System.err.println("esto es una checking");
                 if (account.getBalance().compareTo(((CheckingAccount) account).getMinBalance()) < 0) {
+                    System.err.println("applying penalty");
                     account.setBalance(account.getBalance().subtract(account.getPenaltyFee()));
                     accountRepository.save(account);
                 }
             }
             if (account instanceof SavingsAccount) {
+                System.err.println("esto es una savings");
                 if (account.getBalance().compareTo(((SavingsAccount) account).getMinBalance()) < 0) {
+                    System.err.println("applying penalty2");
                     account.setBalance(account.getBalance().subtract(account.getPenaltyFee()));
                     accountRepository.save(account);
                 }
             }
-            account.setBalance(account.getBalance().subtract(transferenceDTO.getAmount()));
+            System.err.println(account.getBalance().subtract(transferenceDTO.getAmount()));
+            account.setBalance(account.getBalance().add(transferenceDTO.getAmount()));
+            System.err.println(account.getBalance());
             accountRepository.save(account);
             return thirdPartyTransferenceRepository.save(new ThirdPartyTransference(transferenceDTO.getAmount(), account, thirdParty));
         } else {
