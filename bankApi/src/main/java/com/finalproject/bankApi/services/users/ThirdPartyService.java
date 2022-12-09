@@ -3,18 +3,17 @@ package com.finalproject.bankApi.services.users;
 import com.finalproject.bankApi.models.accounts.Account;
 import com.finalproject.bankApi.models.accounts.CheckingAccount;
 import com.finalproject.bankApi.models.accounts.SavingsAccount;
-import com.finalproject.bankApi.models.actions.ThirdPartyTransference;
-import com.finalproject.bankApi.models.actions.Transference;
+import com.finalproject.bankApi.models.transferences.ThirdPartyTransference;
 import com.finalproject.bankApi.models.dtos.ThirdPartyTransferenceDTO;
-import com.finalproject.bankApi.models.dtos.TransferenceDTO;
-import com.finalproject.bankApi.models.users.AccountHolder;
-import com.finalproject.bankApi.models.users.Admin;
+import com.finalproject.bankApi.models.users.Role;
 import com.finalproject.bankApi.models.users.ThirdParty;
 import com.finalproject.bankApi.repositories.accounts.AccountRepository;
 import com.finalproject.bankApi.repositories.transferences.ThirdPartyTransferenceRepository;
+import com.finalproject.bankApi.repositories.users.RoleRepository;
 import com.finalproject.bankApi.repositories.users.ThirdPartyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,9 +27,19 @@ public class ThirdPartyService {
     ThirdPartyTransferenceRepository thirdPartyTransferenceRepository;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    String encodedPassword;
+    Role role;
 
     public ThirdParty addThirdParty(ThirdParty thirdParty) {
-        return thirdPartyRepository.save(thirdParty);
+        encodedPassword = passwordEncoder.encode(thirdParty.getPassword());
+        thirdParty.setPassword(encodedPassword);
+        thirdParty = thirdPartyRepository.save(thirdParty);
+        role = roleRepository.save(new Role("THIRD_PARTY", thirdParty));
+        return thirdParty;
     }
 
 

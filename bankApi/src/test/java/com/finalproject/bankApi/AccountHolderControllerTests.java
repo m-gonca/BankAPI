@@ -86,6 +86,13 @@ public class AccountHolderControllerTests {
     }
 
     @Test
+    void shouldGetAccountById_WhenGetIsPerformed_FAIL() throws Exception {
+        mvcResult = mockMvc.perform(get("/account-holder/{accountId}/{ownerId}", 1, 2)).andExpect(status().isOk()).andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("La Rosalia"));
+    }
+    
+
+    @Test
     void shouldGetAccountBalanceById_WhenGetIsPerformed_OK() throws Exception {
         mvcResult = mockMvc.perform(get("/account-holder/balance/{accountId}/{ownerId}", 1, 1)).andExpect(status().isOk()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("0.00"));

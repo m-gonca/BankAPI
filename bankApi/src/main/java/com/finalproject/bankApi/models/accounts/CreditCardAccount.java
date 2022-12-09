@@ -13,12 +13,16 @@ import java.time.Period;
 
 @Entity
 public class CreditCardAccount extends Account {
+
     @NotNull
+    @DecimalMin(value = "100", inclusive = true)
     @DecimalMax(value = "100000", inclusive = true)
-    private BigDecimal creditLimit = new BigDecimal(100).setScale(2, RoundingMode.HALF_DOWN);
+    private BigDecimal creditLimit = new BigDecimal("100").setScale(2, RoundingMode.HALF_DOWN);
+ 
     @NotNull
-    @DecimalMin(value = "0.1", inclusive = true)
-    private BigDecimal interestRate = new BigDecimal(0.2).setScale(2, RoundingMode.HALF_DOWN);
+    @DecimalMin(value = "0.10", inclusive = true)
+    @DecimalMax(value = "0.20", inclusive = true)
+    private BigDecimal interestRate = new BigDecimal("0.20").setScale(2, RoundingMode.HALF_DOWN);
 
     private LocalDate lastProfitUpdate = LocalDate.now();
 
@@ -62,7 +66,7 @@ public class CreditCardAccount extends Account {
         Period period = Period.between(lastProfitUpdate, LocalDate.now());
         
         if (period.getMonths() == 1) {
-            BigDecimal profit = super.getBalance().multiply(interestRate);
+            BigDecimal profit = super.getBalance().multiply(interestRate.divide(new BigDecimal(12)));
             super.setBalance(super.getBalance().add(profit).setScale(2, RoundingMode.HALF_DOWN));
             lastProfitUpdate = LocalDate.now();
         }

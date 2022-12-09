@@ -1,8 +1,7 @@
-package com.finalproject.bankApi.models.actions;
+package com.finalproject.bankApi.models.transferences;
 
 import com.finalproject.bankApi.models.accounts.Account;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;

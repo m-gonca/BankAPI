@@ -2,8 +2,8 @@ package com.finalproject.bankApi;
 
 import com.finalproject.bankApi.embedded.Address;
 import com.finalproject.bankApi.models.accounts.*;
-import com.finalproject.bankApi.models.actions.ThirdPartyTransference;
-import com.finalproject.bankApi.models.actions.Transference;
+import com.finalproject.bankApi.models.transferences.ThirdPartyTransference;
+import com.finalproject.bankApi.models.transferences.Transference;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import com.finalproject.bankApi.models.users.Admin;
 import com.finalproject.bankApi.models.users.ThirdParty;
@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -91,8 +91,8 @@ public class RepositoriesTests {
 
     @Test
     void shouldAddNewThirdParty_OK() {
-        thirdPartyRepository.save(new ThirdParty("Cafeteria 1"));
-        thirdPartyRepository.save(new ThirdParty("Restaurante"));
+        thirdPartyRepository.save(new ThirdParty("Cafeteria 1", "123456"));
+        thirdPartyRepository.save(new ThirdParty("Restaurante","123456"));
         assertEquals(2, thirdPartyRepository.findAll().size());
     }
 
@@ -122,20 +122,20 @@ public class RepositoriesTests {
     }
 
     @Test
-    void shouldAddNewCreditCardAccount() {
-        accountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2));
-        accountRepository.save(new CreditCardAccount(accountHolder1, null, new BigDecimal(300), new BigDecimal(0.15)));
-        assertEquals(2, creditCardAccountRepository.findAll().size());
-    }
-
-    @Test
     void shouldAddInterestsToSavingsAccount_OK(){
         SavingsAccount savings = new SavingsAccount(accountHolder1, null, "123456");
-        savingsAccountRepository.save(savings);
         savings.setBalance(new BigDecimal(100));
         savings.setLastProfitUpdate(LocalDate.now().minusYears(1));
         savings.checkInterests();
-        assertEquals(new BigDecimal(100.25), savings.getBalance());
+        savingsAccountRepository.save(savings);
+        assertEquals(new BigDecimal(100.25).setScale(2, RoundingMode.HALF_DOWN), savings.getBalance());
+    }
+    
+    @Test
+    void shouldAddNewCreditCardAccount_OK() {
+        accountRepository.save(new CreditCardAccount(accountHolder1, accountHolder2));
+        accountRepository.save(new CreditCardAccount(accountHolder1, null, new BigDecimal(300), new BigDecimal(0.15)));
+        assertEquals(2, creditCardAccountRepository.findAll().size());
     }
 
     @Test
@@ -146,12 +146,13 @@ public class RepositoriesTests {
     
     @Test
     void shouldAddInterestsToCreditCardAccount_OK(){
-        CreditCardAccount creditCard = new CreditCardAccount(accountHolder1, null);
-        creditCardAccountRepository.save(creditCard);
+        CreditCardAccount creditCard = new CreditCardAccount(accountHolder1, null, new BigDecimal(500), new BigDecimal(0.12).setScale(2, RoundingMode.HALF_DOWN));
         creditCard.setBalance(new BigDecimal(100));
         creditCard.setLastProfitUpdate(LocalDate.now().minusMonths(1));
+        creditCardAccountRepository.save(creditCard);
+        System.err.println(creditCard.getInterestRate());
         creditCard.checkInterests();
-        assertEquals(new BigDecimal(120.00), creditCard.getBalance());
+        assertEquals(new BigDecimal(101.00).setScale(2, RoundingMode.HALF_DOWN), creditCard.getBalance());
     }
 
     @Test
@@ -164,14 +165,8 @@ public class RepositoriesTests {
 
     @Test
     void shouldAddNewThirdPartyTransference() {
-        ThirdParty thirdParty = thirdPartyRepository.save(new ThirdParty("Cafeteria"));
+        ThirdParty thirdParty = thirdPartyRepository.save(new ThirdParty("Cafeteria", "123456"));
         Account account = checkingAccountRepository.findById(1L).get();
-      /*  Account sendingAccount;
-        List<Account> ownerAccounts = accountHolder1.getPrimaryOwnerAccounts();
-        for(Account account : ownerAccounts){
-            if(account.getId() == 1)
-                sendingAccount = account;
-        }*/
         thirdPartyTransferenceRepository.save(new ThirdPartyTransference(new BigDecimal(1000), account, thirdParty));
         assertEquals(1, thirdPartyTransferenceRepository.findAll().size());
     }

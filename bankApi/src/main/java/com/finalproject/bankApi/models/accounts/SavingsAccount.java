@@ -17,12 +17,16 @@ import java.time.Period;
 
 @Entity
 public class SavingsAccount extends Account {
+  
     @NotNull
     @DecimalMin(value = "100", inclusive = true)
-    private BigDecimal minBalance = new BigDecimal(1000).setScale(2, RoundingMode.HALF_DOWN);
+    @DecimalMax(value = "1000", inclusive = true)
+    private BigDecimal minBalance = new BigDecimal("1000").setScale(2, RoundingMode.HALF_DOWN);
+  
     @NotNull
+    @DecimalMin(value = "0", inclusive = true)
     @DecimalMax(value = "0.5", inclusive = true)
-    private BigDecimal interestRate = new BigDecimal(0.0025).setScale(4, RoundingMode.HALF_DOWN);
+    private BigDecimal interestRate = new BigDecimal("0.0025").setScale(4, RoundingMode.HALF_DOWN);
 
     private final LocalDate creationDate = LocalDate.now();
 

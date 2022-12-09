@@ -1,9 +1,8 @@
-package com.finalproject.bankApi.models.actions;
+package com.finalproject.bankApi.models.transferences;
 
 import com.finalproject.bankApi.models.accounts.Account;
 import com.finalproject.bankApi.models.users.ThirdParty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
@@ -21,7 +20,7 @@ public class ThirdPartyTransference {
     private Account account;
     @NotNull
     @ManyToOne
-    //@JoinColumn(name = "thirdParty_id")
+    //@JoinColumn(name = "third_party_id")
     private ThirdParty thirdParty;
 
     public ThirdPartyTransference() {

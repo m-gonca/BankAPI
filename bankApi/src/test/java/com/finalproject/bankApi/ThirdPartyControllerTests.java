@@ -86,7 +86,7 @@ public class ThirdPartyControllerTests {
                 new SavingsAccount(accountHolder1, null, "123456"),
                 new CreditCardAccount(accountHolder1, accountHolder2)
         ));
-        thirdParty = new ThirdParty("Cajero");
+        thirdParty = new ThirdParty("Cajero", "123456");
         thirdPartyRepository.save(thirdParty);
     }
 

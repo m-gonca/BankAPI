@@ -1,8 +1,8 @@
 package com.finalproject.bankApi.models.accounts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.finalproject.bankApi.models.actions.ThirdPartyTransference;
-import com.finalproject.bankApi.models.actions.Transference;
+import com.finalproject.bankApi.models.transferences.ThirdPartyTransference;
+import com.finalproject.bankApi.models.transferences.Transference;
 import com.finalproject.bankApi.models.users.AccountHolder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -119,6 +119,8 @@ public abstract class Account {
     public void setThirdPartyTransference(List<ThirdPartyTransference> thirdPartyTransference) {
         this.thirdPartyTransference = thirdPartyTransference;
     }
+    
+    
 
     @Override
     public boolean equals(Object o) {

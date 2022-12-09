@@ -30,9 +30,14 @@ public class SecurityConfiguration {
         httpSecurity.httpBasic();
 
         httpSecurity.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/user-area").hasRole("USER")
-                .requestMatchers(HttpMethod.GET, "/user-admin-area**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/user-details").hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.GET , "/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST , "/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH , "/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE , "/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/account-holder/**").hasRole("ACCOUNT_HOLDER")
+                .requestMatchers(HttpMethod.POST, "/account-holder/**").hasRole("ACCOUNT_HOLDER")
+                .requestMatchers(HttpMethod.GET, "/third-party/**").hasRole("THIRD_PARTY")
+                .requestMatchers(HttpMethod.POST, "/third-party/**").hasRole("THIRD_PARTY")
                 .anyRequest().permitAll();
 
         httpSecurity.csrf().disable();

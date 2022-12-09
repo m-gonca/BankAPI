@@ -9,10 +9,17 @@ public class TransferenceDTO {
     private String ownerName;
     private Long receiveAccountId;
 
+    public TransferenceDTO(){}
     public TransferenceDTO(BigDecimal amount, Long sendAccountId, String ownerName, Long receiveAccountId) {
         this.amount = amount;
         this.sendAccountId = sendAccountId;
         this.ownerName = ownerName;
+        this.receiveAccountId = receiveAccountId;
+    }
+
+    public TransferenceDTO(BigDecimal amount, Long sendAccountId, Long receiveAccountId) {
+        this.amount = amount;
+        this.sendAccountId = sendAccountId;
         this.receiveAccountId = receiveAccountId;
     }
 

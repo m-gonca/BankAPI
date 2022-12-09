@@ -1,7 +1,6 @@
 package com.finalproject.bankApi.repositories.transferences;
 
-import com.finalproject.bankApi.models.actions.ThirdPartyTransference;
-import com.finalproject.bankApi.models.users.ThirdParty;
+import com.finalproject.bankApi.models.transferences.ThirdPartyTransference;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

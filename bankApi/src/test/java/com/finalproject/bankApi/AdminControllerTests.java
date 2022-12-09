@@ -115,7 +115,7 @@ public class AdminControllerTests {
 
     @Test
     void shouldAddNewThirdParty_whenPostIsPerformed_OK() throws Exception {
-        ThirdParty thirdParty = new ThirdParty("Cafeteria");
+        ThirdParty thirdParty = new ThirdParty("Cafeteria", "123456");
         body = objectMapper.writeValueAsString(thirdParty);
         mvcResult = mockMvc.perform(post("/admin/add-third-party").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Cafeteria"));
